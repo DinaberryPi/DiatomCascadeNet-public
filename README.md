@@ -48,29 +48,32 @@ Run commands from the repository root. The Google Colab notebook follows the ori
 ```bash
 python -m pip install -e .
 python -m unittest discover -s tests -p "test_*.py" -v
+python -m scripts.data.labeling.convert_metadata
 python -m scripts.data.cleaning.clean_data
 python -m scripts.data.preprocessing.build_taxonomy_tree
 python -m scripts.data.preprocessing.create_filtered_datasets
-python -m scripts.data.preprocessing.create_split_manifests --overwrite
+python -m scripts.data.preprocessing.create_split_manifests
 ```
 
-The Colab notebook then runs the progressive sequence F-C to H-CO to H-COF to H-COFG to H-COFGS, trains the independent F-G and F-S baselines, and evaluates all seven frozen checkpoints.
+The Colab notebook then runs the progressive sequence F-C to H-CO to H-COF to H-COFG to H-COFGS, trains the independent F-G and F-S baselines, and evaluates all seven frozen checkpoints. Each model has its own cell so a late failure does not restart completed training stages. The final sections run the species-level paper analysis, the supporting genus-level comparison, and the result-table and figure generators.
 
-The template expects the same Drive folder used by the 2025 notebook, with two additional private files that are no longer stored in the repository:
+The template expects the raw-input portion of the private dataset to be uploaded to Drive with the same directory structure:
 
 ```text
 MyDrive/DiatomScanNet/
   images/
   metadata.xlsx
-  invalid_images.csv
+  invalid_images.csv  # optional
   runs/<RUN_ID>/
 ```
 
-The notebook rebuilds `labels.csv`, the deterministic taxonomy tree, filtered tables, and fixed split manifests inside Colab. Run-specific checkpoints, logs, predictions, evaluations, and hashes are written to Drive under `runs/<RUN_ID>/`.
+The notebook rebuilds `labels.csv`, the deterministic taxonomy tree, filtered tables, and fixed split manifests inside Colab. It verifies all seven manifest sets and enforces identical splits for H-COFG/F-G and H-COFGS/F-S. Run-specific split copies, checkpoints, logs, predictions, evaluations, tables, figures, environment records, and hashes are written to Drive under `runs/<RUN_ID>/`.
 
 ## Data policy
 
-- The complete dataset, labels, split manifests, checkpoints, logs, predictions, and internal reports are private research artifacts.
+- The original third-party images and annotations are not distributed because redistribution rights are not available. The MIT licence covers the code, not those data.
+- Users may run the pipeline with appropriately licensed images and a matching taxonomy workbook of their own.
+- The complete study dataset, labels, split manifests, checkpoints, logs, predictions, and internal reports are private research artifacts.
 - The public notebook contains no outputs, attachments, embedded images, or user-specific private paths. It includes only a generic, editable Google Drive layout.
 - The executed 2025 notebook remains a private local archive.
 - The website has no image uploader or live classifier.

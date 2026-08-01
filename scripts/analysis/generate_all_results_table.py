@@ -11,8 +11,9 @@ from diatom_cascade.config.path_config import get_output_dir, get_project_root
 
 # Project root
 PROJECT_ROOT = get_project_root()
-EVAL_DIR = get_output_dir(PROJECT_ROOT) / "evaluation"
-OUTPUT_FILE = PROJECT_ROOT / "docs/all_results_tables.md"
+RUN_DIR = get_output_dir(PROJECT_ROOT)
+EVAL_DIR = RUN_DIR / "evaluation"
+OUTPUT_FILE = RUN_DIR / "all_results_tables.md"
 
 # Model configurations
 MODELS = {
@@ -247,7 +248,12 @@ def generate_markdown_table() -> str:
     lines.append("Error propagation analysis comparing H-COFGS and F-S models.")
     lines.append("")
     
-    error_prop_file = PROJECT_ROOT / "report" / "error_propagation" / "error_propagation_H_COFGS_vs_F_S_results.json"
+    error_prop_file = (
+        RUN_DIR
+        / "figures"
+        / "error_propagation"
+        / "error_propagation_H_COFGS_vs_F_S_results.json"
+    )
     if error_prop_file.exists():
         with open(error_prop_file, 'r', encoding='utf-8') as f:
             error_prop_data = json.load(f)
