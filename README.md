@@ -39,11 +39,11 @@ tests/                Fail-closed, architecture, path, and data-integrity checks
 site/                 Bilingual public research website
 ```
 
-Private `dataset/`, `outputs/`, `docs/`, and `report/` trees are intentionally absent and ignored by Git.
+The empty `dataset/` directory structure is included so the same paths are used in every environment. Its images, annotations, generated tables, and split manifests remain ignored by Git. Private `outputs/`, `docs/`, and `report/` trees are also ignored.
 
 ## Reproducible run
 
-Run commands from the repository root. Private inputs must first be mounted under `dataset/` as documented in the notebook.
+Run commands from the repository root. The Google Colab notebook follows the original 2025 setup: clone the repository, install its requirements, mount Google Drive, and copy the private inputs into the ignored `dataset/` directory.
 
 ```bash
 python -m pip install -e .
@@ -56,10 +56,22 @@ python -m scripts.data.preprocessing.create_split_manifests --overwrite
 
 The Colab notebook then runs the progressive sequence F-C to H-CO to H-COF to H-COFG to H-COFGS, trains the independent F-G and F-S baselines, and evaluates all seven frozen checkpoints.
 
+The template expects the same Drive folder used by the 2025 notebook, with two additional private files that are no longer stored in the repository:
+
+```text
+MyDrive/DiatomScanNet/
+  images/
+  metadata.xlsx
+  invalid_images.csv
+  runs/<RUN_ID>/
+```
+
+The notebook rebuilds `labels.csv`, the deterministic taxonomy tree, filtered tables, and fixed split manifests inside Colab. Run-specific checkpoints, logs, predictions, evaluations, and hashes are written to Drive under `runs/<RUN_ID>/`.
+
 ## Data policy
 
 - The complete dataset, labels, split manifests, checkpoints, logs, predictions, and internal reports are private research artifacts.
-- The public notebook contains no outputs, attachments, embedded images, or private paths.
+- The public notebook contains no outputs, attachments, embedded images, or user-specific private paths. It includes only a generic, editable Google Drive layout.
 - The executed 2025 notebook remains a private local archive.
 - The website has no image uploader or live classifier.
 
@@ -76,4 +88,3 @@ Use `npm test` for the production build and publication-boundary checks.
 ## License
 
 The source code is released under the [MIT License](LICENSE). This license does not grant rights to the private dataset, source images, metadata, experiment artifacts, or model checkpoints.
-

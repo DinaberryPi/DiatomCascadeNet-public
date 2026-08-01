@@ -6,7 +6,7 @@ All parameters must match TrainingConfig to ensure fair comparison
 
 from pathlib import Path
 import torch
-from .path_config import get_output_dir
+from .path_config import get_data_root, get_output_dir
 from .train_and_val_config import TrainAndValConfig
 
 
@@ -36,7 +36,7 @@ class EvaluationConfig:
     # Data Paths
     # ============================================================================
     
-    DATA_ROOT = Path("dataset")
+    DATA_ROOT = get_data_root()
     IMAGES_DIR = DATA_ROOT / "raw" / "images"
     TAXONOMY_JSON = DATA_ROOT / "preprocessed" / "taxonomy_tree.json"
     LABELS_CSV = None  # Will be loaded from model_data_mapping.json

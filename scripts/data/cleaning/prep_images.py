@@ -1,5 +1,6 @@
 import cv2, numpy as np, re, glob, os
 from pathlib import Path
+from diatom_cascade.config.path_config import get_data_root
 
 # ======= Configurable Hyperparameters =======
 SIZE        = 320          # Unified output size
@@ -122,4 +123,4 @@ def process_dir(in_dir, out_dir, pattern="*.PNG", debug=False):
     print(f"Processed {len(paths)} images -> {out_dir}")
 
 if __name__ == "__main__":
-    process_dir("slides_png", "dataset/raw/images")
+    process_dir("slides_png", str(get_data_root() / "raw" / "images"))

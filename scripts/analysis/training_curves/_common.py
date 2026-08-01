@@ -13,7 +13,7 @@ from diatom_cascade.config.path_config import get_output_dir, get_project_root
 
 PROJECT_ROOT = get_project_root()
 LOG_DIR = get_output_dir(PROJECT_ROOT) / "logs"
-REPORT_DIR = PROJECT_ROOT / "report"
+REPORT_DIR = get_output_dir(PROJECT_ROOT) / "figures"
 
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 REPORT_DIR.mkdir(parents=True, exist_ok=True)

@@ -30,11 +30,12 @@ import matplotlib.pyplot as plt
 from diatom_cascade.prediction import greedy_hierarchical_predict as hierarchical_predict
 from diatom_cascade.runtime import load_checkpoint, load_label_encoder
 from diatom_cascade.models import ClassToOrderModel
+from diatom_cascade.config.path_config import get_data_root
 
 # 配置
 class Config:
     # 数据路径
-    DATA_ROOT = Path("dataset")
+    DATA_ROOT = get_data_root()
     IMAGES_DIR = DATA_ROOT / "raw" / "images"
     
     # Use unified prediction configuration

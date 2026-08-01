@@ -22,3 +22,14 @@ def get_output_dir(project_root=None):
     if project_root is not None and not path.is_absolute():
         path = Path(project_root) / path
     return path
+
+
+def get_data_root(project_root=None):
+    """Return the private dataset root without requiring it inside the repository."""
+    value = os.environ.get("DIATOM_DATA_ROOT", "dataset").strip()
+    if not value:
+        raise ValueError("DIATOM_DATA_ROOT must not be empty")
+    path = Path(value)
+    if project_root is not None and not path.is_absolute():
+        path = Path(project_root) / path
+    return path

@@ -7,7 +7,7 @@ All parameters must match TrainingConfig and EvaluationConfig to ensure consiste
 from pathlib import Path
 import torch
 from .evaluation_config import EvaluationConfig
-from .path_config import get_output_dir
+from .path_config import get_data_root, get_output_dir
 from .train_and_val_config import TrainAndValConfig
 
 
@@ -35,7 +35,7 @@ class PredictionConfig:
     # Data Paths
     # ============================================================================
     
-    DATA_ROOT = Path("dataset")
+    DATA_ROOT = get_data_root()
     IMAGES_DIR = DATA_ROOT / "raw" / "images"
     TAXONOMY_JSON = DATA_ROOT / "preprocessed" / "taxonomy_tree.json"
     

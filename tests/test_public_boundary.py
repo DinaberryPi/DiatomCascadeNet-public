@@ -39,6 +39,15 @@ PRIVATE_SUFFIXES = {
     ".webp",
     ".xlsx",
 }
+PUBLIC_DATASET_SKELETON = {
+    Path("dataset/README.md"),
+    Path("dataset/raw/.gitkeep"),
+    Path("dataset/raw/images/.gitkeep"),
+    Path("dataset/exclusions/.gitkeep"),
+    Path("dataset/cleaned/.gitkeep"),
+    Path("dataset/preprocessed/.gitkeep"),
+    Path("dataset/splits/.gitkeep"),
+}
 
 
 def git_paths(*arguments):
@@ -60,7 +69,11 @@ class PublicBoundaryTests(unittest.TestCase):
         )
         violations = []
         for path in candidates:
-            if path.parts and path.parts[0] in PRIVATE_DIRECTORIES:
+            if (
+                path.parts
+                and path.parts[0] in PRIVATE_DIRECTORIES
+                and path not in PUBLIC_DATASET_SKELETON
+            ):
                 violations.append(str(path))
             elif path.suffix.lower() in PRIVATE_SUFFIXES:
                 violations.append(str(path))
@@ -79,11 +92,7 @@ class PublicBoundaryTests(unittest.TestCase):
                     self.assertEqual(cell.get("outputs"), [])
 
     def test_public_text_has_no_private_absolute_path(self):
-        forbidden = (
-            "C:" + "\\Users\\" + "dinah",
-            "/content/" + "drive",
-            "My" + "Drive",
-        )
+        forbidden = ("C:" + "\\Users\\" + "dinah",)
         suffixes = {".css", ".ipynb", ".js", ".json", ".md", ".mjs", ".py", ".toml", ".ts", ".tsx"}
         violations = []
         for path in PROJECT_ROOT.rglob("*"):

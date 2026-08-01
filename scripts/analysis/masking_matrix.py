@@ -17,13 +17,16 @@ from sklearn.preprocessing import LabelEncoder
 import sys
 import io
 
+from diatom_cascade.config.path_config import get_data_root, get_output_dir
+
 # Set UTF-8 encoding for output
 if sys.platform == 'win32':
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
 # Load taxonomy
-TAXONOMY_JSON = Path("dataset/taxonomy_tree.json")
-LABELS_CSV = Path("dataset/labels_clean.csv")
+DATA_ROOT = get_data_root()
+TAXONOMY_JSON = DATA_ROOT / "preprocessed" / "taxonomy_tree.json"
+LABELS_CSV = DATA_ROOT / "cleaned" / "labels_clean.csv"
 
 def build_masking_matrices():
     """Build masking matrices from data"""
@@ -184,7 +187,7 @@ def visualize_masking_matrix_as_tree():
     plt.tight_layout()
     
     # Save
-    output_path = Path("report/masking_matrix_as_tree.png")
+    output_path = get_output_dir() / "figures" / "masking_matrix_as_tree.png"
     output_path.parent.mkdir(exist_ok=True)
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     print(f"\n[OK] Saved visualization to {output_path}")
@@ -240,7 +243,7 @@ def main():
     print("  Visualization Complete!")
     print("=" * 70)
     print(f"\nThe masking matrix IS the relationship tree in matrix form!")
-    print(f"Open report/masking_matrix_as_tree.png to see the visualization.")
+    print(f"Open {get_output_dir() / 'figures' / 'masking_matrix_as_tree.png'} to see the visualization.")
     plt.close()
 
 if __name__ == "__main__":

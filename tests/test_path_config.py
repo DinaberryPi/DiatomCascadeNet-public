@@ -4,10 +4,14 @@ from pathlib import Path
 from unittest.mock import patch
 
 
-from diatom_cascade.config.path_config import get_output_dir
+from diatom_cascade.config.path_config import get_data_root, get_output_dir
 
 
 class OutputPathTests(unittest.TestCase):
+    def test_external_data_directory(self):
+        with patch.dict(os.environ, {"DIATOM_DATA_ROOT": "private/dataset"}):
+            self.assertEqual(get_data_root(), Path("private/dataset"))
+
     def test_default_output_directory(self):
         with patch.dict(os.environ, {}, clear=True):
             self.assertEqual(get_output_dir(), Path("outputs"))

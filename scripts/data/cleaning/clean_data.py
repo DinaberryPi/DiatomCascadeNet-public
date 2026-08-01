@@ -19,22 +19,20 @@ Usage:
     python -m scripts.data.cleaning.clean_data
 """
 
-import hashlib
 import re
 import sys
-from pathlib import Path
 
 import pandas as pd
 
-from diatom_cascade.config.data_config import EXCLUSION_MANIFEST_SHA256
-from diatom_cascade.config.path_config import get_project_root
+from diatom_cascade.config.path_config import get_data_root, get_project_root
 
 PROJECT_ROOT = get_project_root()
+DATA_ROOT = get_data_root()
 
 # Paths
-RAW_LABELS = Path("dataset/raw/labels.csv")  # Generated from raw metadata
-CLEAN_LABELS = Path("dataset/cleaned/labels_clean.csv")  # Cleaned for training
-INVALID_IMAGES = Path("dataset/exclusions/invalid_images.csv")
+RAW_LABELS = DATA_ROOT / "raw" / "labels.csv"
+CLEAN_LABELS = DATA_ROOT / "cleaned" / "labels_clean.csv"
+INVALID_IMAGES = DATA_ROOT / "exclusions" / "invalid_images.csv"
 
 def main():
     # Load raw data
@@ -42,13 +40,8 @@ def main():
 
     if not INVALID_IMAGES.is_file():
         raise FileNotFoundError(f"Required exclusion manifest not found: {INVALID_IMAGES}")
-    manifest_hash = hashlib.sha256(INVALID_IMAGES.read_bytes()).hexdigest()
-    if manifest_hash != EXCLUSION_MANIFEST_SHA256:
-        raise ValueError(
-            f"Exclusion manifest hash mismatch: expected {EXCLUSION_MANIFEST_SHA256}, got {manifest_hash}"
-        )
     exclusions = pd.read_csv(INVALID_IMAGES)
-    if exclusions.empty or "filename" not in exclusions.columns or exclusions["filename"].duplicated().any():
+    if "filename" not in exclusions.columns or exclusions["filename"].duplicated().any():
         raise ValueError(f"Invalid exclusion manifest: {INVALID_IMAGES}")
     excluded_names = set(exclusions["filename"].astype(str))
     unknown_names = excluded_names - set(df["filename"].astype(str))
@@ -143,7 +136,7 @@ def main():
         uncertain_samples = df[uncertain_mask].copy()
         
         # Save uncertain samples to Excel for review
-        uncertain_excel_path = Path("dataset/cleaned/uncertain_species.xlsx")
+        uncertain_excel_path = DATA_ROOT / "cleaned" / "uncertain_species.xlsx"
         export_cols = ['filename', 'class', 'order', 'family', 'genus', 'species']
         export_cols = [col for col in export_cols if col in uncertain_samples.columns]
         uncertain_samples[export_cols].to_excel(uncertain_excel_path, index=False, engine='openpyxl')

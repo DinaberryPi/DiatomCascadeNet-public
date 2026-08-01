@@ -28,9 +28,10 @@ if sys.platform == 'win32':
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 from diatom_cascade.config.data_config import MIN_SAMPLES
+from diatom_cascade.config.path_config import get_data_root
 
 # Paths
-DATA_ROOT = Path("dataset")
+DATA_ROOT = get_data_root()
 LABELS_CLEAN_CSV = DATA_ROOT / "cleaned" / "labels_clean.csv"
 OUTPUT_DIR = DATA_ROOT / "preprocessed"
 

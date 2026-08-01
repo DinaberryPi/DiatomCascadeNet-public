@@ -20,11 +20,12 @@ from pathlib import Path
 import csv
 
 # Resolve paths relative to the validated repository root.
-from diatom_cascade.config.path_config import get_project_root
+from diatom_cascade.config.path_config import get_data_root, get_project_root
 
 PROJECT_ROOT = get_project_root()
-XLSX = PROJECT_ROOT / "dataset" / "raw" / "metadata.xlsx"  # Raw metadata
-OUT = PROJECT_ROOT / "dataset" / "raw" / "labels.csv"      # Raw labels (uncleaned)
+DATA_ROOT = get_data_root(PROJECT_ROOT)
+XLSX = DATA_ROOT / "raw" / "metadata.xlsx"
+OUT = DATA_ROOT / "raw" / "labels.csv"
 OUT.parent.mkdir(parents=True, exist_ok=True)
 
 # Column name mapping

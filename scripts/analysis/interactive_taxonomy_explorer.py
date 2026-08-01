@@ -15,6 +15,11 @@ import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend
 import matplotlib.pyplot as plt
 
+from diatom_cascade.config.path_config import get_data_root, get_output_dir
+
+
+REPORT_DIR = get_output_dir() / "figures"
+
 # Set UTF-8 encoding for output
 if sys.platform == 'win32':
     import io
@@ -22,8 +27,9 @@ if sys.platform == 'win32':
 
 def load_taxonomy_and_stats():
     """Load taxonomy tree and statistics"""
-    TAXONOMY_JSON = Path("dataset/preprocessed/taxonomy_tree.json")
-    LABELS_CSV = Path("dataset/cleaned/labels_clean.csv")
+    data_root = get_data_root()
+    TAXONOMY_JSON = data_root / "preprocessed" / "taxonomy_tree.json"
+    LABELS_CSV = data_root / "cleaned" / "labels_clean.csv"
     
     with open(TAXONOMY_JSON, 'r', encoding='utf-8') as f:
         taxonomy = json.load(f)
@@ -123,13 +129,13 @@ def create_statistics_dashboard(stats, df):
     
     return fig
 
-def generate_statistics_png(output_path="report/data_distribution_overview.png", 
+def generate_statistics_png(output_path=None,
                            width=1600, height=1400, dpi=100):
     """
     Generate statistics visualization directly as PNG using matplotlib
     
     Args:
-        output_path: Path to save the PNG file (default: report/data_distribution_overview.png)
+        output_path: Path to save the PNG file
         width: Image width in pixels (default: 1600)
         height: Image height in pixels (default: 1400)
         dpi: Image resolution (default: 100)
@@ -203,7 +209,7 @@ def generate_statistics_png(output_path="report/data_distribution_overview.png",
     print(f"      ✓ Dashboard ready")
     
     # Save PNG
-    output_path = Path(output_path)
+    output_path = Path(output_path) if output_path else REPORT_DIR / "data_distribution_overview.png"
     output_path.parent.mkdir(exist_ok=True, parents=True)
     
     print(f"\n[3/3] Exporting to PNG: {output_path}")
@@ -222,7 +228,7 @@ def generate_statistics_png(output_path="report/data_distribution_overview.png",
     
     return output_path
 
-def generate_statistics_html(output_path="report/data_distribution_overview.html"):
+def generate_statistics_html(output_path=None):
     """
     Generate statistics visualization as interactive HTML
     
@@ -236,7 +242,7 @@ def generate_statistics_html(output_path="report/data_distribution_overview.html
     tree, stats, df = load_taxonomy_and_stats()
     fig = create_statistics_dashboard(stats, df)
     
-    output_path = Path(output_path)
+    output_path = Path(output_path) if output_path else REPORT_DIR / "data_distribution_overview.html"
     output_path.parent.mkdir(exist_ok=True, parents=True)
     fig.write_html(str(output_path))
     
@@ -275,7 +281,7 @@ if __name__ == "__main__":
         '--output',
         type=str,
         default=None,
-        help='Output file path (default: report/data_distribution_overview.{format})'
+        help='Output file path (default: current run figures directory)'
     )
     
     args = parser.parse_args()
@@ -289,9 +295,9 @@ if __name__ == "__main__":
         output_path = Path(args.output)
     else:
         if args.format == 'png':
-            output_path = Path("report/data_distribution_overview.png")
+            output_path = REPORT_DIR / "data_distribution_overview.png"
         else:
-            output_path = Path("report/data_distribution_overview.html")
+            output_path = REPORT_DIR / "data_distribution_overview.html"
     
     # Generate visualization
     if args.format == 'png':

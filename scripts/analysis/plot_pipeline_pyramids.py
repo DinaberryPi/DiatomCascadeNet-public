@@ -17,16 +17,18 @@ from matplotlib.patches import Rectangle
 import argparse
 
 from diatom_cascade.config.data_config import MIN_SAMPLES
+from diatom_cascade.config.path_config import get_data_root, get_output_dir
 
 # Set style
 plt.rcParams['font.size'] = 10
 plt.rcParams['font.family'] = 'sans-serif'
 
 # Paths
-RAW_LABELS = Path("dataset/raw/labels.csv")
-CLEAN_LABELS = Path("dataset/cleaned/labels_clean.csv")
-PREPROCESSED_DIR = Path("dataset/preprocessed")
-REPORT_DIR = Path("report")
+DATA_ROOT = get_data_root()
+RAW_LABELS = DATA_ROOT / "raw" / "labels.csv"
+CLEAN_LABELS = DATA_ROOT / "cleaned" / "labels_clean.csv"
+PREPROCESSED_DIR = DATA_ROOT / "preprocessed"
+REPORT_DIR = get_output_dir() / "figures"
 REPORT_DIR.mkdir(parents=True, exist_ok=True)
 
 # Pipeline stages - matching original format exactly

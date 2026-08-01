@@ -9,7 +9,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from pathlib import Path
 from sklearn.metrics import confusion_matrix, classification_report, f1_score, accuracy_score
 from diatom_cascade.config.path_config import get_output_dir
 import warnings
@@ -22,6 +21,6 @@ sns.set_palette("husl")
 # Paths
 EVAL_DIR = get_output_dir() / "evaluation"
 EVAL_DIR.mkdir(parents=True, exist_ok=True)
-REPORT_DIR = Path("report")
+REPORT_DIR = get_output_dir() / "figures"
 REPORT_DIR.mkdir(parents=True, exist_ok=True)
 

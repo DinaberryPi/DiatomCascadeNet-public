@@ -16,11 +16,13 @@ import pandas as pd
 import json
 from pathlib import Path
 from collections import defaultdict
+from diatom_cascade.config.path_config import get_data_root
 
 # Paths
-LABELS_CSV = Path("dataset/cleaned/labels_clean.csv")
-OUTPUT_JSON = Path("dataset/preprocessed/taxonomy_tree.json")
-OUTPUT_STATS = Path("dataset/preprocessed/taxonomy_stats.json")
+DATA_ROOT = get_data_root()
+LABELS_CSV = DATA_ROOT / "cleaned" / "labels_clean.csv"
+OUTPUT_JSON = DATA_ROOT / "preprocessed" / "taxonomy_tree.json"
+OUTPUT_STATS = DATA_ROOT / "preprocessed" / "taxonomy_stats.json"
 
 def build_taxonomy_tree(df):
     """

@@ -5,6 +5,8 @@ import matplotlib.patches as mpatches
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 import numpy as np
 
+from diatom_cascade.config.path_config import get_output_dir
+
 def draw_taxonomy_tree_simple():
     """
     生成简洁的分类树，展示一个具体样本的错误对比
@@ -83,7 +85,8 @@ def draw_taxonomy_tree_simple():
     ax.legend(loc='upper right', fontsize=11)
     
     plt.tight_layout()
-    output_path = 'report/error_propagation/taxonomy_tree_simple.png'
+    output_path = get_output_dir() / 'figures' / 'error_propagation' / 'taxonomy_tree_simple.png'
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white')
     print(f"✓ 简洁树图已生成: {output_path}")
     plt.close()

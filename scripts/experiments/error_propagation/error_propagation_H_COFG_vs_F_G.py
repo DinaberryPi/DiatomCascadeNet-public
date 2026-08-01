@@ -19,7 +19,7 @@ import torch
 from sklearn.metrics import confusion_matrix
 import sys
 
-from diatom_cascade.config.path_config import get_output_dir
+from diatom_cascade.config.path_config import get_data_root, get_output_dir
 from diatom_cascade.runtime import load_checkpoint
 
 # 设置
@@ -445,14 +445,14 @@ def main():
     print("=" * 80 + "\n")
     
     # 配置路径
-    taxonomy_tree_path = "dataset/preprocessed/taxonomy_tree.json"
-    output_dir = get_output_dir()
-    eval_results_dir = output_dir / "evaluation"
-    output_dir = Path("report/error_propagation")
+    taxonomy_tree_path = get_data_root() / "preprocessed" / "taxonomy_tree.json"
+    run_dir = get_output_dir()
+    eval_results_dir = run_dir / "evaluation"
+    output_dir = run_dir / "figures" / "error_propagation"
     output_dir.mkdir(exist_ok=True, parents=True)
     
     # Checkpoint路径（用于加载encoders）
-    checkpoint_dir = output_dir / "checkpoints"
+    checkpoint_dir = run_dir / "checkpoints"
     h_cofg_checkpoint_path = checkpoint_dir / "best_H_COFG_model.pth"
     
     # 创建分析器

@@ -27,9 +27,10 @@ import numpy as np
 import torch
 from pathlib import Path
 from typing import Dict, Any, Optional
+from ..config.path_config import get_data_root
 
 # Path to taxonomy tree
-TAXONOMY_JSON = Path("dataset/preprocessed/taxonomy_tree.json")
+TAXONOMY_JSON = get_data_root() / "preprocessed" / "taxonomy_tree.json"
 
 def load_hierarchy_masks(
     class_encoder,

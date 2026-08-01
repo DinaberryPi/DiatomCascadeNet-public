@@ -31,7 +31,7 @@ from pathlib import Path
 
 # Import standardized training config
 from diatom_cascade.config.train_and_val_config import TrainAndValConfig as TrainingConfig
-from diatom_cascade.config.path_config import get_output_dir
+from diatom_cascade.config.path_config import get_data_root, get_output_dir
 from diatom_cascade.config.reporting import print_training_config
 from diatom_cascade.models import FlatClassifier
 from diatom_cascade.checkpoints import CHECKPOINT_SCHEMA_VERSION
@@ -42,7 +42,7 @@ class Config:
     MODEL_TYPE = "F-G"
     
     # Data paths
-    DATA_ROOT = Path("dataset")
+    DATA_ROOT = get_data_root()
     IMAGES_DIR = DATA_ROOT / "raw" / "images"
     LABELS_CSV = None  # Will be loaded from model_data_mapping.json
     

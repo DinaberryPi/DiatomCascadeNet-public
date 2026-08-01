@@ -18,7 +18,7 @@ def main():
     parser.add_argument('--history', type=str, default=None,
                        help='Path to history JSON file (default: auto-detect)')
     parser.add_argument('--output', type=str, default=None,
-                       help='Output path (default: report/H_COFGS__training_curves.png)')
+                       help='Output path (default: current run figures directory)')
     
     args = parser.parse_args()
     
