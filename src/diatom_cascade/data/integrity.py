@@ -9,6 +9,7 @@ import pandas as pd
 from PIL import Image
 
 from ..config import split_config
+from ..config.data_config import IMAGE_SIZE
 
 
 def resolve_model_dataset(data_root, model_type):
@@ -103,6 +104,11 @@ def validate_images(df, images_dir, report_path=None):
             with Image.open(image_path) as image:
                 image.verify()
             with Image.open(image_path) as image:
+                if image.size != (IMAGE_SIZE, IMAGE_SIZE):
+                    raise ValueError(
+                        f"expected {IMAGE_SIZE}x{IMAGE_SIZE}, got "
+                        f"{image.width}x{image.height}"
+                    )
                 extrema = image.convert("RGB").getextrema()
                 if all(low == high for low, high in extrema):
                     raise ValueError(f"uniform image with channel extrema {extrema}")

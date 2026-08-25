@@ -1,9 +1,10 @@
 import cv2, numpy as np, re, glob, os
 from pathlib import Path
 from diatom_cascade.config.path_config import get_data_root
+from diatom_cascade.config.data_config import IMAGE_SIZE
 
 # ======= Configurable Hyperparameters =======
-SIZE        = 320          # Unified output size
+SIZE        = IMAGE_SIZE   # Unified output size
 MARGIN      = 0.15         # ROI bounding box expansion ratio (0.10~0.25)
 PAD_VAL     = 255          # Padding color (white)
 MIN_AREA_FR = 0.0005       # Minimum candidate area ratio, skip if too small (prevent treating noise as main object)

@@ -9,6 +9,7 @@ import numpy as np
 import torch
 import torchvision.transforms as transforms
 from . import split_config
+from .data_config import IMAGE_SIZE as DATA_IMAGE_SIZE
 from .data_config import MIN_SAMPLES as DATA_MIN_SAMPLES
 from .model_config import (
     BACKBONE_PRETRAIN as CONFIGURED_BACKBONE_PRETRAIN,
@@ -32,7 +33,7 @@ class TrainAndValConfig:
     # ============================================================================
     
     # Data & Model Architecture
-    IMAGE_SIZE = 320
+    IMAGE_SIZE = DATA_IMAGE_SIZE
     BATCH_SIZE = 32
     BASE_MODEL = CONFIGURED_BASE_MODEL
     BACKBONE_PRETRAIN = CONFIGURED_BACKBONE_PRETRAIN

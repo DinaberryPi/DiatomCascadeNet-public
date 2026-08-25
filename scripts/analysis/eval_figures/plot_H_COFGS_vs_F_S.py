@@ -13,7 +13,7 @@ import numpy as np
 import argparse
 
 
-def plot_h_cofgs_vs_f_s_comparison(mode='full'):
+def plot_h_cofgs_vs_f_s_comparison(mode='minimal'):
     """
     对比 H-COFGS 与 F-S 的四种预测方式：
     3 个层级模型方法 + 1 个 flat bottom-up 方法
@@ -182,7 +182,7 @@ if __name__ == "__main__":
     import argparse
     
     parser = argparse.ArgumentParser(description='Generate H-COFGS vs F-S comparison')
-    parser.add_argument('--mode', choices=['full', 'minimal'], default='full',
+    parser.add_argument('--mode', choices=['full', 'minimal'], default='minimal',
                         help='Comparison mode: full (4 methods) or minimal (2 methods)')
     args = parser.parse_args()
     

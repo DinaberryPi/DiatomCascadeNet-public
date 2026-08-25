@@ -20,7 +20,8 @@ These are archived results, not outputs of the refactored 2026 pipeline. The can
 - H-CO, H-COF, H-COFG, and H-COFGS strictly transfer only `backbone.*` from the immediately preceding checkpoint.
 - The backbone remains trainable after transfer.
 - Fixed train, validation, and test manifests are created once and reused by all execution paths.
-- Image preflight fails on missing, unreadable, uniform, or byte-duplicated files.
+- Image preflight fails on missing, unreadable, incorrectly sized, uniform, or
+  byte-duplicated files.
 
 Pre-refactor checkpoints with stage-specific module names such as `class_backbone.*` are intentionally rejected by the canonical schema. Use a fresh output directory for the rerun.
 
@@ -41,6 +42,14 @@ site/                 Bilingual public research website
 
 The empty `dataset/` directory structure is included so the same paths are used in every environment. Its images, annotations, generated tables, and split manifests remain ignored by Git. Private `outputs/`, `docs/`, and `report/` trees are also ignored.
 
+The paper's image input is `320 x 320` pixels. The audited study set contains
+4,869 RGB PNG images at that size. Keep `IMAGE_SIZE = 320` for reproduction;
+users training on their own data may configure another square input size and
+report it as a new experiment. Source images must be cropped consistently,
+resized without changing aspect ratio, and padded to the configured size before
+this pipeline runs. See [`dataset/README.md`](dataset/README.md) for the complete
+input contract.
+
 ## Reproducible run
 
 Run commands from the repository root. The Google Colab notebook follows the original 2025 setup: clone the repository, install its requirements, mount Google Drive, and copy the private inputs into the ignored `dataset/` directory.
@@ -57,6 +66,9 @@ python -m scripts.data.preprocessing.create_split_manifests
 
 The Colab notebook then runs the progressive sequence F-C to H-CO to H-COF to H-COFG to H-COFGS, trains the independent F-G and F-S baselines, and evaluates all seven frozen checkpoints. Each model has its own cell so a late failure does not restart completed training stages. The final sections run the species-level paper analysis, the supporting genus-level comparison, and the result-table and figure generators.
 
+Each module prints an explicit success message and elapsed time. A failed
+module raises immediately and does not print a success message.
+
 The template expects the raw-input portion of the private dataset to be uploaded to Drive with the same directory structure:
 
 ```text
@@ -67,7 +79,7 @@ MyDrive/DiatomScanNet/
   runs/<RUN_ID>/
 ```
 
-The notebook rebuilds `labels.csv`, the deterministic taxonomy tree, filtered tables, and fixed split manifests inside Colab. It verifies all seven manifest sets and enforces identical splits for H-COFG/F-G and H-COFGS/F-S. Run-specific split copies, checkpoints, logs, predictions, evaluations, tables, figures, environment records, and hashes are written to Drive under `runs/<RUN_ID>/`.
+The notebook rebuilds `labels.csv`, the deterministic taxonomy tree, filtered tables, and fixed split manifests inside Colab. It verifies all seven manifest sets and enforces identical splits for H-COFG/F-G and H-COFGS/F-S. Run-specific split copies, an image SHA-256 inventory, checkpoints, logs, predictions, evaluations, tables, figures, environment records, and hashes are written to Drive under `runs/<RUN_ID>/`.
 
 ## Data policy
 
