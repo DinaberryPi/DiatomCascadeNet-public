@@ -55,13 +55,13 @@ def main():
     if merged_count > 0:
         df.loc[df['class'] == 'Mediophyceae', 'class'] = 'Coscinodiscophyceae'
     
-    # Step 2: Remove samples with missing labels
+    # Step 2: Remove samples with missing labels at any taxonomic rank.
     before_filter = len(df)
-    df = df[
-        (df['class'].notna() & (df['class'] != '')) &
-        (df['order'].notna() & (df['order'] != '')) &
-        (df['family'].notna() & (df['family'] != ''))
-    ].copy()
+    required_taxonomy_columns = ['class', 'order', 'family', 'genus', 'species']
+    complete_taxonomy = pd.Series(True, index=df.index)
+    for column in required_taxonomy_columns:
+        complete_taxonomy &= df[column].notna() & df[column].astype(str).str.strip().ne('')
+    df = df[complete_taxonomy].copy()
     
     # Step 3: Remove uncertain species (sus, sp., aff., etc.)
     

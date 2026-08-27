@@ -7,6 +7,7 @@ from unittest import mock
 import pandas as pd
 
 from scripts.data.cleaning import clean_data
+from scripts.data.preprocessing.build_taxonomy_tree import build_taxonomy_tree
 from scripts.evaluate import run_all_evaluations
 
 
@@ -49,6 +50,43 @@ class FailClosedTests(unittest.TestCase):
             ):
                 with self.assertRaises(FileNotFoundError):
                     clean_data.main()
+
+    def test_cleaning_drops_incomplete_taxonomy_before_tree_building(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            raw_labels = root / "labels.csv"
+            manifest = root / "invalid_images.csv"
+            clean_labels = root / "cleaned" / "labels_clean.csv"
+            pd.DataFrame([
+                {
+                    "filename": "complete.png",
+                    "class": "Class A",
+                    "order": "Order A",
+                    "family": "Family A",
+                    "genus": "Genus A",
+                    "species": "Species A",
+                },
+                {
+                    "filename": "unresolved.png",
+                    "class": "Class A",
+                    "order": "Order A",
+                    "family": "Family A",
+                    "genus": "Genus A",
+                    "species": "",
+                },
+            ]).to_csv(raw_labels, index=False)
+            pd.DataFrame(columns=["filename"]).to_csv(manifest, index=False)
+
+            with mock.patch.object(clean_data, "RAW_LABELS", raw_labels), mock.patch.object(
+                clean_data, "INVALID_IMAGES", manifest
+            ), mock.patch.object(clean_data, "CLEAN_LABELS", clean_labels), mock.patch.object(
+                clean_data, "DATA_ROOT", root
+            ):
+                clean_data.main()
+
+            cleaned = pd.read_csv(clean_labels)
+            self.assertEqual(cleaned["filename"].tolist(), ["complete.png"])
+            self.assertIn("Class A", build_taxonomy_tree(cleaned))
 
     def test_cleaning_rejects_malformed_exclusion_manifest(self):
         with tempfile.TemporaryDirectory() as temp_dir:
